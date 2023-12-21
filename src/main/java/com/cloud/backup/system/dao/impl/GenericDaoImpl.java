@@ -1,28 +1,33 @@
 package com.cloud.backup.system.dao.impl;
 
 import com.cloud.backup.system.dao.GenericDAO;
+import com.cloud.backup.system.model.Model;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 
-import java.io.Serializable;
+public class GenericDaoImpl<T extends Model> implements GenericDAO<T> {
 
-public class GenericDaoImpl implements GenericDAO {
+    @Inject
+    EntityManager entityManager;
+
 
     @Override
-    public Serializable byId(Long id) {
+    public T findById(Long id) {
         return null;
     }
 
     @Override
-    public Serializable insert(Serializable serializable) {
+    public T insert(Model t) {
         return null;
     }
 
     @Override
-    public Serializable delete(Serializable serializable) {
+    public T delete(Model t) {
         return null;
     }
 
     @Override
-    public Serializable update(Serializable serializable) {
+    public T update(Model t) {
         return null;
     }
 }

@@ -1,10 +1,10 @@
 package com.cloud.backup.system.dao;
 
-import java.io.Serializable;
+import com.cloud.backup.system.model.Model;
 
-public interface GenericDAO<T extends Serializable> {
+public interface GenericDAO<T extends Model> {
 
-    public T byId(Long id);
+    public T findById(Long id);
 
     public T insert(T t);
 
