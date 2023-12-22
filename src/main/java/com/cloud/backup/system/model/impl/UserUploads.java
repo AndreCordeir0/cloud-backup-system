@@ -35,6 +35,10 @@ public class UserUploads implements Model {
     @Column
     private LocalDateTime removedDate;
 
+    @Column(name = "stream_type")
+    @Enumerated(EnumType.STRING)
+    private StreamType streamType;
+
     @Override
     public Long getId() {
         return id;

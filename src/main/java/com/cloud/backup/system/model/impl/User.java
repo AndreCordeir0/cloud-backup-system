@@ -4,10 +4,15 @@ package com.cloud.backup.system.model.impl;
 import com.cloud.backup.system.model.Model;
 import jakarta.persistence.*;
 
+import java.io.Serial;
+
 
 @Table(schema = "cloud",name = "TB_USER")
 @Entity
 public class User implements Model {
+
+    @Serial
+    private static final long serialVersionUID = -7167538436900509610L;
 
     public User() {}
 
@@ -37,6 +42,8 @@ public class User implements Model {
     @Enumerated(EnumType.STRING)
     private UserRoles userRoles;
 
+    @Column(name = "is_active")
+    private boolean isActive;
 
     @Override
     public Long getId() {
@@ -57,5 +64,9 @@ public class User implements Model {
 
     public UserRoles getUserRoles() {
         return userRoles;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
     }
 }
