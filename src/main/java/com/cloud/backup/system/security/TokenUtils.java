@@ -4,7 +4,6 @@ import com.cloud.backup.system.model.impl.UserRoles;
 import io.smallrye.jwt.build.Jwt;
 import io.smallrye.jwt.build.JwtClaimsBuilder;
 
-
 import java.io.InputStream;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
