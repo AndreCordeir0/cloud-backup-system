@@ -4,11 +4,11 @@ import com.cloud.backup.system.model.Model;
 
 public interface GenericDAO<T extends Model> {
 
-    public T findById(Long id);
+    public T findById(Long id, Class<T> clazz);
 
-    public T insert(T t);
+    public void insert(T t);
 
-    public T delete(T t);
+    public void delete(T t);
 
     public T update(T t);
 }

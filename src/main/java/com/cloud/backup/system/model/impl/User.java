@@ -3,8 +3,10 @@ package com.cloud.backup.system.model.impl;
 
 import com.cloud.backup.system.model.Model;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.io.Serial;
+import java.time.LocalDate;
 
 
 @Table(schema = "cloud",name = "TB_USER")
@@ -15,7 +17,12 @@ public class User implements Model {
     private static final long serialVersionUID = -7167538436900509610L;
 
     public User() {}
-
+    public User(String email, String password, String name, UserRoles userRoles) {
+        this.email = email;
+        this.password = password;
+        this.name = name;
+        this.userRoles = userRoles;
+    }
     public User(Long id, String email, String password, String name, UserRoles userRoles) {
         this.id = id;
         this.email = email;
@@ -29,7 +36,7 @@ public class User implements Model {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email;
 
     @Column(name = "password")
@@ -43,7 +50,11 @@ public class User implements Model {
     private UserRoles userRoles;
 
     @Column(name = "is_active")
-    private boolean isActive;
+    private Boolean isActive = true;
+
+    @Column(name = "created_at", updatable = false)
+    @CreationTimestamp
+    private LocalDate createdAt;
 
     @Override
     public Long getId() {
