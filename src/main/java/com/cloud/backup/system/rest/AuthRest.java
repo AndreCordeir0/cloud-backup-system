@@ -7,7 +7,9 @@ import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
 
 @Path("/auth")
 public class AuthRest {
@@ -15,10 +17,13 @@ public class AuthRest {
     @Inject
     UserService userService;
 
+    @Context
+    SecurityContext ctx;
     @POST
     @Path("/create")
     @PermitAll
     public Response createUser(AuthRequest authRequest) throws Exception {
+        System.out.println(ctx);
         return Response.ok(userService.create(authRequest)).build();
     }
 }

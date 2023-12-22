@@ -33,7 +33,7 @@ public class TokenUtils {
         return claimsBuilder.jws().signatureKeyId(privateKeyLocation).sign(privateKey);
     }
 
-    public static PrivateKey readPrivateKey(final String pemResName) throws Exception {
+    private static PrivateKey readPrivateKey(final String pemResName) throws Exception {
         try (InputStream contentIS = TokenUtils.class.getResourceAsStream(pemResName)) {
             byte[] tmp = new byte[4096];
             int length = contentIS.read(tmp);
@@ -41,7 +41,7 @@ public class TokenUtils {
         }
     }
 
-    public static PrivateKey decodePrivateKey(final String pemEncoded) throws Exception {
+    private static PrivateKey decodePrivateKey(final String pemEncoded) throws Exception {
         byte[] encodedBytes = toEncodedBytes(pemEncoded);
 
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(encodedBytes);
@@ -49,12 +49,12 @@ public class TokenUtils {
         return kf.generatePrivate(keySpec);
     }
 
-    public static byte[] toEncodedBytes(final String pemEncoded) {
+    private static byte[] toEncodedBytes(final String pemEncoded) {
         final String normalizedPem = removeBeginEnd(pemEncoded);
         return Base64.getDecoder().decode(normalizedPem);
     }
 
-    public static String removeBeginEnd(String pem) {
+    private static String removeBeginEnd(String pem) {
         pem = pem.replaceAll("-----BEGIN (.*)-----", "");
         pem = pem.replaceAll("-----END (.*)----", "");
         pem = pem.replaceAll("\r\n", "");
@@ -62,7 +62,7 @@ public class TokenUtils {
         return pem.trim();
     }
 
-    public static int currentTimeInSecs() {
+    private static int currentTimeInSecs() {
         long currentTimeMS = System.currentTimeMillis();
         return (int) (currentTimeMS / 1000);
     }
