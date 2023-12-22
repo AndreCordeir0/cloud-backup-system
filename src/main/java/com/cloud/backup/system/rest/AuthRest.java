@@ -26,4 +26,10 @@ public class AuthRest {
         System.out.println(ctx);
         return Response.ok(userService.create(authRequest)).build();
     }
+
+    @POST
+    @Path("/login")
+    public Response login(AuthRequest authRequest) throws Exception {
+        return Response.ok(userService.login(authRequest)).build();
+    }
 }

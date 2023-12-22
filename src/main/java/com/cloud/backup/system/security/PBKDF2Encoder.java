@@ -9,6 +9,7 @@ import javax.crypto.spec.PBEKeySpec;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Base64;
+import java.util.Objects;
 
 @RequestScoped
 public class PBKDF2Encoder {
@@ -32,5 +33,10 @@ public class PBKDF2Encoder {
         } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
             throw new RuntimeException(ex);
         }
+    }
+
+    public Boolean compare(String passwordCandidate, String encodedPassword) {
+        var password = encode(passwordCandidate);
+        return encodedPassword.equals(password);
     }
 }

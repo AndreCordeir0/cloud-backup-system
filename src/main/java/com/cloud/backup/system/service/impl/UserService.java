@@ -38,6 +38,10 @@ public class UserService {
                     Response.Status.BAD_REQUEST
             );
         }
+        var userWithSameEmail = userDAO.findByEmail(authRequest.getEmail());
+        if (userWithSameEmail != null) {
+            throw new CloudBusinessException("User with the same email already exists. Please use a different email address.", Response.Status.BAD_REQUEST);
+        }
         var hash = pbkdf2Encoder.encode(authRequest.getPassword());
         User user = new User(
                 authRequest.getEmail(), hash, authRequest.getName(), UserRoles.USER
@@ -45,6 +49,30 @@ public class UserService {
         userDAO.insert(user);
 
         var token = TokenUtils.generateToken(user.getName(),user.getUserRoles(), tokenDuration, null);
+        return AuthResponse.token(token);
+    }
+
+    public AuthResponse login(AuthRequest authRequest) throws Exception {
+        if (
+                 authRequest.getEmail() == null || authRequest.getPassword() == null
+        ) {
+            throw new CloudBusinessException(
+                    "Invalid user. Please provide values for email and password.",
+                    Response.Status.BAD_REQUEST
+            );
+        }
+        var userWithSameEmail = userDAO.findByEmail(authRequest.getEmail());
+        if (userWithSameEmail == null) {
+            throw new CloudBusinessException("Authentication failed. Please check your credentials and try again.", Response.Status.BAD_REQUEST);
+        }
+
+        var isValidPassword = pbkdf2Encoder.compare(authRequest.getPassword(),userWithSameEmail.getPassword());
+        if (!isValidPassword) {
+            throw new CloudBusinessException("Authentication failed. Please check your credentials and try again.", Response.Status.BAD_REQUEST);
+        }
+        var token = TokenUtils.generateToken(
+                userWithSameEmail.getName(), userWithSameEmail.getUserRoles(), tokenDuration, null
+        );
         return AuthResponse.token(token);
     }
 
