@@ -11,7 +11,6 @@ public class VolumeImpl implements Volume {
     @ConfigProperty(name = "volume.path")
     String volumePath;
 
-
     @Override
     public Path getPath() {
         return Path.of(URI.create(volumePath));
