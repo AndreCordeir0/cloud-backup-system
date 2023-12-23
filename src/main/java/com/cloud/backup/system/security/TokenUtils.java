@@ -14,7 +14,7 @@ import java.util.Set;
 
 public class TokenUtils {
 
-    public static String generateToken(String username, UserRoles role, Long duration, String issuer) throws Exception {
+    public static String generateToken(String username, UserRoles role, Long duration, Long id, String email) throws Exception {
         String privateKeyLocation = "/privatekey.pem";
         PrivateKey privateKey = readPrivateKey(privateKeyLocation);
 
@@ -24,11 +24,12 @@ public class TokenUtils {
         Set<String> groups = new HashSet<>();
         groups.add(role.toString());
 
-        claimsBuilder.issuer(issuer);
         claimsBuilder.subject(username);
         claimsBuilder.issuedAt(currentTimeInSecs);
         claimsBuilder.expiresAt(currentTimeInSecs + duration);
         claimsBuilder.groups(groups);
+        claimsBuilder.claim(ClaimEnum.ID.getClaim(), String.valueOf(id));
+        claimsBuilder.claim(ClaimEnum.EMAIL.getClaim(), email);
 
         return claimsBuilder.jws().signatureKeyId(privateKeyLocation).sign(privateKey);
     }
