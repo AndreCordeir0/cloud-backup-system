@@ -48,7 +48,7 @@ public class UserService {
         );
         userDAO.insert(user);
 
-        var token = TokenUtils.generateToken(user.getName(),user.getUserRoles(), tokenDuration, null);
+        var token = TokenUtils.generateToken(user.getName(),user.getUserRoles(), tokenDuration, user.getId(), user.getEmail());
         return AuthResponse.token(token);
     }
 
@@ -61,17 +61,17 @@ public class UserService {
                     Response.Status.BAD_REQUEST
             );
         }
-        var userWithSameEmail = userDAO.findByEmail(authRequest.getEmail());
-        if (userWithSameEmail == null) {
+        var user = userDAO.findByEmail(authRequest.getEmail());
+        if (user == null) {
             throw new CloudBusinessException("Authentication failed. Please check your credentials and try again.", Response.Status.BAD_REQUEST);
         }
 
-        var isValidPassword = pbkdf2Encoder.compare(authRequest.getPassword(),userWithSameEmail.getPassword());
+        var isValidPassword = pbkdf2Encoder.compare(authRequest.getPassword(),user.getPassword());
         if (!isValidPassword) {
             throw new CloudBusinessException("Authentication failed. Please check your credentials and try again.", Response.Status.BAD_REQUEST);
         }
         var token = TokenUtils.generateToken(
-                userWithSameEmail.getName(), userWithSameEmail.getUserRoles(), tokenDuration, null
+                user.getName(), user.getUserRoles(), tokenDuration, user.getId(), user.getPassword()
         );
         return AuthResponse.token(token);
     }
@@ -90,7 +90,7 @@ public class UserService {
         }
         User user = userDAO.findById(id, User.class);
         if (user == null) {
-            throw new CloudBusinessException("User not found. Please provide a valid user.", Response.Status.BAD_REQUEST);
+            throw new CloudBusinessException("User not found. Please provide a valid user.", Response.Status.NOT_FOUND);
         }
         return new UserRecord(user.getId(), user.getEmail(), user.getName(), user.getUserRoles(), user.getIsActive());
     }

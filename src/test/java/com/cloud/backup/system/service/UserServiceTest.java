@@ -38,7 +38,7 @@ public class UserServiceTest {
             fail("erro");
         } catch (CloudBusinessException e) {
             assertEquals("User not found. Please provide a valid user.", e.getMessage());
-            assertEquals(Status.BAD_REQUEST, e.getStatus());
+            assertEquals(Status.NOT_FOUND, e.getStatus());
         }
     }
 }
