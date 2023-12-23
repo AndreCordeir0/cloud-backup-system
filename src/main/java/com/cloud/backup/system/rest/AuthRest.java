@@ -19,6 +19,7 @@ public class AuthRest {
 
     @Context
     SecurityContext ctx;
+
     @POST
     @Path("/create")
     @PermitAll
