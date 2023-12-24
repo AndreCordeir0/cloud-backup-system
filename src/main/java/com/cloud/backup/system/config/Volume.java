@@ -8,7 +8,7 @@ public interface Volume {
 
     public Path createFolder(String name, String username);
 
-    public void deleteFolder();
+    public void deleteFolder(Path path);
 
     public Path createStream(Long id, Path path);
 }

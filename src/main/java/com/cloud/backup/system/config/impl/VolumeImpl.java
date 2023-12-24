@@ -1,6 +1,7 @@
 package com.cloud.backup.system.config.impl;
 
 import com.cloud.backup.system.config.Volume;
+import com.cloud.backup.system.exception.impl.CloudBusinessException;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
@@ -38,8 +39,13 @@ public class VolumeImpl implements Volume {
     }
 
     @Override
-    public void deleteFolder() {
-
+    public void deleteFolder(Path path) {
+        try {
+            Boolean deleted = Files.deleteIfExists(path);
+        }catch (IOException e) {
+            logger.error("Erro ao deletar arquivo no diretorio: {}", path.toString());
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
