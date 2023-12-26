@@ -8,24 +8,23 @@ import com.cloud.backup.system.security.AuthRequest;
 import com.cloud.backup.system.security.AuthResponse;
 import com.cloud.backup.system.service.impl.UserService;
 import io.quarkus.test.InjectMock;
-import io.quarkus.test.Mock;
-import io.quarkus.test.junit.QuarkusTest;
-import org.junit.jupiter.api.Assertions;
+import io.quarkus.test.component.QuarkusComponentTest;
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import static jakarta.ws.rs.core.Response.Status;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
-@QuarkusTest
+@QuarkusComponentTest
 public class UserServiceTest {
-
     @InjectMock
-    UserService userService;
-
-    @Mock
     UserDAO userDAO;
+
+    @Inject
+    UserService userService;
 
     AuthRequest authRequest;
     @BeforeEach
