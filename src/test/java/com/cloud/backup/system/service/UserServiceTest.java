@@ -1,22 +1,38 @@
 package com.cloud.backup.system.service;
 
 
+import com.cloud.backup.system.dao.impl.UserDAO;
 import com.cloud.backup.system.exception.impl.CloudBusinessException;
+import com.cloud.backup.system.model.impl.User;
+import com.cloud.backup.system.security.AuthRequest;
+import com.cloud.backup.system.security.AuthResponse;
 import com.cloud.backup.system.service.impl.UserService;
+import io.quarkus.test.InjectMock;
+import io.quarkus.test.Mock;
 import io.quarkus.test.junit.QuarkusTest;
-import jakarta.inject.Inject;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import static jakarta.ws.rs.core.Response.Status;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
 public class UserServiceTest {
 
-    @Inject
+    @InjectMock
     UserService userService;
+
+    @Mock
+    UserDAO userDAO;
+
+    AuthRequest authRequest;
+    @BeforeEach
+    public void init() {
+        authRequest = mockAuthResquest();
+    }
+
 
     @Test
     public void naoDeveRecuperarUsuario_IdNull() {
@@ -40,5 +56,19 @@ public class UserServiceTest {
             assertEquals("User not found. Please provide a valid user.", e.getMessage());
             assertEquals(Status.NOT_FOUND, e.getStatus());
         }
+    }
+
+    @Test
+    public void deveCriarUsuario() throws Exception {
+        AuthResponse auth = userService.create(authRequest);
+        Mockito.verify(userDAO, Mockito.times(1)).insert(Mockito.any(User.class));
+    }
+
+    private AuthRequest mockAuthResquest() {
+        AuthRequest authRequest = new AuthRequest();
+        authRequest.setEmail("teste@gmail.com");
+        authRequest.setName("Maria");
+        authRequest.setPassword("1234Abc");
+        return authRequest;
     }
 }
