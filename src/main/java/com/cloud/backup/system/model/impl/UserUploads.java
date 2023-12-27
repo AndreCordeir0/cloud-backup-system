@@ -35,9 +35,8 @@ public class UserUploads implements Model {
     @Column(name = "removed_date")
     private LocalDateTime removedDate;
 
-    @Column(name = "stream_type")
-    @Enumerated(EnumType.STRING)
-    private StreamType streamType;
+    @Column(name = "mime_type")
+    private String mimeType;
 
     @Column
     private String folder;
@@ -57,5 +56,33 @@ public class UserUploads implements Model {
 
     public UUID getUuid() {
         return uuid;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setUnsafe(Boolean unsafe) {
+        isUnsafe = unsafe;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
+    }
+
+    public void setFolder(String folder) {
+        this.folder = folder;
     }
 }

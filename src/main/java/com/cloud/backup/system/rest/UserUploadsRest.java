@@ -38,6 +38,6 @@ public class UserUploadsRest {
     @RolesAllowed({"USER", "ADMIN"})
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     public Response saveStream(@MultipartForm FormData formData) {
-        return Response.ok(userUploadsService.saveStream(formData)).build();
+        return Response.ok(userUploadsService.saveStream(formData, ctx.getClaim(ClaimEnum.ID.getClaim()))).build();
     }
 }
