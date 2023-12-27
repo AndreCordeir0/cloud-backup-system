@@ -29,15 +29,18 @@ public class UserUploads implements Model {
     @Column
     private String name;
 
-    @Column(updatable = false)
+    @Column(name = "upload_date", updatable = false)
     private LocalDateTime uploadDate;
 
-    @Column
+    @Column(name = "removed_date")
     private LocalDateTime removedDate;
 
     @Column(name = "stream_type")
     @Enumerated(EnumType.STRING)
     private StreamType streamType;
+
+    @Column
+    private String folder;
 
     @Override
     public Long getId() {
