@@ -1,7 +1,6 @@
 package com.cloud.backup.system.config.impl;
 
 import com.cloud.backup.system.config.Volume;
-import com.cloud.backup.system.exception.impl.CloudBusinessException;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
@@ -27,11 +26,11 @@ public class VolumeImpl implements Volume {
     }
 
     @Override
-    public Path createFolder(String pathName, String userId) {
-        Path directory = Paths.get(pathConcat(userId,pathName));
+    public void createFolder(String pathName, String userId) {
+        String concatPath = pathConcat(userId,pathName);
+        Path directory = Paths.get(concatPath);
         try {
             Files.createDirectories(directory);
-            return directory;
         }catch (IOException e) {
             logger.error(e.getMessage());
             throw new RuntimeException(e);
@@ -41,9 +40,14 @@ public class VolumeImpl implements Volume {
     @Override
     public void deleteFolder(Path path) {
         try {
-            Boolean deleted = Files.deleteIfExists(path);
+            boolean deleted = Files.deleteIfExists(path);
+            if (deleted) {
+                logger.info("Folder deleted successful");
+            } else {
+                logger.info("Folder deleted successful");
+            }
         }catch (IOException e) {
-            logger.error("Erro ao deletar arquivo no diretorio: {}", path.toString());
+            logger.error("Error deleting the folder in path: {}", path.toString());
             throw new RuntimeException(e);
         }
     }
@@ -74,4 +78,6 @@ public class VolumeImpl implements Volume {
         }
         return sb.toString();
     }
+
+
 }

@@ -6,7 +6,7 @@ public interface Volume {
 
     public Path getPath();
 
-    public Path createFolder(String name, String username);
+    public void createFolder(String name, String userId);
 
     public void deleteFolder(Path path);
 
