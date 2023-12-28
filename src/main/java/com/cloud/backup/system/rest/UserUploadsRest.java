@@ -5,6 +5,7 @@ import com.cloud.backup.system.security.ClaimEnum;
 import com.cloud.backup.system.service.impl.UserUploadsService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -37,7 +38,7 @@ public class UserUploadsRest {
     @Path("/stream")
     @RolesAllowed({"USER", "ADMIN"})
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response saveStream(@MultipartForm FormData formData) {
+    public Response saveStream(@MultipartForm @Valid FormData formData) {
         return Response.ok(userUploadsService.saveStream(formData, ctx.getClaim(ClaimEnum.ID.getClaim()))).build();
     }
 }

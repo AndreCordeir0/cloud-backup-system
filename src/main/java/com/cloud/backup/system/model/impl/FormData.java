@@ -1,5 +1,6 @@
 package com.cloud.backup.system.model.impl;
 
+import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.FormParam;
 import jakarta.ws.rs.core.MediaType;
 import org.apache.tika.Tika;
@@ -17,10 +18,12 @@ public class FormData implements Serializable {
 
     @FormParam("file")
     @PartType(MediaType.APPLICATION_OCTET_STREAM)
+    @NotNull
     public byte[] file;
 
     @FormParam("name-file")
     @PartType(MediaType.TEXT_PLAIN)
+    @NotNull
     public String fileName;
 
     @FormParam("folder")
