@@ -3,6 +3,7 @@ package com.cloud.backup.system.model.impl;
 
 import com.cloud.backup.system.model.Model;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -29,6 +30,7 @@ public class UserUploads implements Model {
     @Column
     private String name;
 
+    @CreationTimestamp
     @Column(name = "upload_date", updatable = false)
     private LocalDateTime uploadDate;
 
