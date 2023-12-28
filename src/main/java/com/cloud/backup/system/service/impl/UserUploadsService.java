@@ -14,6 +14,7 @@ import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.file.Path;
 import java.util.UUID;
 
 import static jakarta.ws.rs.core.Response.Status;
@@ -40,8 +41,8 @@ public class UserUploadsService {
     }
 
     @Transactional(Transactional.TxType.REQUIRED)
-    public String saveStream(@MultipartForm FormData formData, Long userId) {
-        User user = userDAO.findById(userId, User.class);
+    public String saveStream(@MultipartForm FormData formData, String userId) {
+        User user = userDAO.findById(Long.valueOf(userId), User.class);
         if (user == null) {
          //TODO throw exception
         }
@@ -52,10 +53,11 @@ public class UserUploadsService {
         userUploads.setFolder(formData.folder);
         userUploads.setUser(user);
         userUploads.setMimeType(formData.getMimeType());
-        //TODO save the file in directory
-        //volumeUtil.createStream();
-
+        userUploads.setName(formData.fileName);
         userUploadsDAO.insert(userUploads);
+
+        Path directory = volumeUtil.getActualPath(userId, formData.folder);
+        volumeUtil.saveFile(uuid.toString(), directory, formData.file);
 
         return formData.getMimeType();
     }

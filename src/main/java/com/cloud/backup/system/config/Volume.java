@@ -10,5 +10,5 @@ public interface Volume {
 
     public void deleteFolder(Path path);
 
-    public Path createStream(Long id, Path path);
+    public void saveFile(String hash, Path path, byte[] content);
 }

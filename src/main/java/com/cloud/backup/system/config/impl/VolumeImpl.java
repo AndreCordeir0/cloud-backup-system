@@ -6,6 +6,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
@@ -27,8 +28,7 @@ public class VolumeImpl implements Volume {
 
     @Override
     public void createFolder(String pathName, String userId) {
-        String concatPath = pathConcat(userId,pathName);
-        Path directory = Paths.get(concatPath);
+        Path directory = getActualPath(userId,pathName);
         try {
             Files.createDirectories(directory);
         }catch (IOException e) {
@@ -53,16 +53,29 @@ public class VolumeImpl implements Volume {
     }
 
     @Override
-    public Path createStream(Long id, Path path) {
-        return null;
+    public void saveFile(String hash, Path path, byte[] content) {
+        try {
+            File file = new File(path.toString() + "/" + hash);
+            Files.write(file.toPath(), content);
+        }catch (IOException e) {
+            logger.error("error in create file: {}", path.toString());
+            throw new RuntimeException(e);
+        }
     }
 
+    /**
+     * don't concat if args is null
+     * @param args
+     * @return
+     */
     private String pathConcat(String ...args) {
         StringBuilder sb = new StringBuilder();
         sb.append(volumePath);
         for (String path : args) {
-            sb.append("/");
-            sb.append(replaceSpacesWithUnderlining(path));
+            if (path != null) {
+                sb.append("/");
+                sb.append(replaceSpacesWithUnderlining(path));
+            }
         }
         return sb.toString();
     }
@@ -79,5 +92,15 @@ public class VolumeImpl implements Volume {
         return sb.toString();
     }
 
-
+    public Path getActualPath(String ...args) {
+        String concatPath = pathConcat(args);
+        Path path = Paths.get(concatPath);
+        try {
+            Files.createDirectories(path);
+        }catch (IOException e){
+            logger.error("Error creating directory");
+            throw new RuntimeException(e);
+        }
+        return path;
+    }
 }
