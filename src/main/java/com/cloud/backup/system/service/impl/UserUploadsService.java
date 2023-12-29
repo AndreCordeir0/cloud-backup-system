@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -49,7 +50,7 @@ public class UserUploadsService {
     public String saveFile(@MultipartForm FormData formData, String userId) {
         User user = userDAO.findById(Long.valueOf(userId), User.class);
         if (user == null) {
-         //TODO throw exception
+            //TODO throw exception
         }
         var sizeInKB = formData.file.length / 1024;
         logger.info("Tamanho: {}", sizeInKB);
@@ -76,6 +77,7 @@ public class UserUploadsService {
 
     /**
      * Mark file unsafe and delete this in volume
+     *
      * @param id UserUploads id
      */
     @Transactional(Transactional.TxType.REQUIRED)
@@ -84,13 +86,33 @@ public class UserUploadsService {
         userUpload.setUnsafe(true)
                 .setRemovedDate(LocalDateTime.now());
 
-        Path path = volumeUtil.getActualPath(
+        Path path = mountPathUsingUserUploads(userUpload);
+        CompletableFuture
+                .runAsync(() ->
+                        volumeUtil.deleteFile(path)
+                ).exceptionally((ex) -> {
+                    userUpload.setRemovedDate(null);
+                    logger.error("Erro ao deletar arquivo : {}", ex.getMessage());
+                    return null;
+                });
+    }
+    @Transactional
+    public void deleteFilesMarked() {
+        List<UserUploads> uploads = userUploadsDAO.getFilesMarkedAndNotDeleted();
+        for (UserUploads upload : uploads) {
+            Path path = mountPathUsingUserUploads(upload);
+            upload.setRemovedDate(LocalDateTime.now());
+            volumeUtil.deleteFile(path);
+        }
+    }
+
+    private Path mountPathUsingUserUploads(UserUploads userUpload) {
+        return volumeUtil.getActualPath(
                 String.valueOf(
                         userUpload.getUser().getId()
                 ),
                 userUpload.getFolder(),
                 userUpload.getUuid().toString()
         );
-        CompletableFuture.runAsync(()->volumeUtil.deleteFile(path));
     }
 }
