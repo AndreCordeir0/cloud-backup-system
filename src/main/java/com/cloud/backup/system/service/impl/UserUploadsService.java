@@ -34,6 +34,9 @@ public class UserUploadsService {
     @Inject
     UserUploadsDAO userUploadsDAO;
 
+
+    private final static int TWO_HUNDRED_MB_IN_KB = 200000;
+
     public String createFolder(String folderName, String userId) {
         if (folderName == null) {
             throw new CloudBusinessException("The folder name cannot be null.", Status.BAD_REQUEST);
@@ -48,6 +51,12 @@ public class UserUploadsService {
         if (user == null) {
          //TODO throw exception
         }
+        var sizeInKB = formData.file.length / 1024;
+        logger.info("Tamanho: {}", sizeInKB);
+        if (sizeInKB > TWO_HUNDRED_MB_IN_KB) {
+            throw new CloudBusinessException("Maximum file size is 200MB", Status.NOT_ACCEPTABLE);
+        }
+
         UUID uuid = UUID.randomUUID();
         logger.info("UUID: {}", uuid.toString());
         UserUploads userUploads = new UserUploads()
