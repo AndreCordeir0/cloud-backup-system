@@ -17,8 +17,7 @@ public class FileScheduler {
     UserUploadsService userUploadsService;
     Logger logger = LoggerFactory.getLogger(FileScheduler.class);
 
-//    @Scheduled(every="1h", delay = 1, delayUnit = TimeUnit.HOURS)
-    @Scheduled(every = "20s")
+    @Scheduled(every="1h", delay = 1, delayUnit = TimeUnit.HOURS)
     void deleteFilesMarked() {
         CompletableFuture.runAsync(()->userUploadsService.deleteFilesMarked()).exceptionally((ex)->{
             logger.error(ex.getMessage());
