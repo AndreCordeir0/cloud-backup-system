@@ -60,31 +60,69 @@ public class UserUploads implements Model {
         return uuid;
     }
 
-    public void setId(Long id) {
+
+    public String getName() {
+        return name;
+    }
+
+    public LocalDateTime getUploadDate() {
+        return uploadDate;
+    }
+
+    public LocalDateTime getRemovedDate() {
+        return removedDate;
+    }
+
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    public String getFolder() {
+        return folder;
+    }
+
+    public UserUploads setId(Long id) {
         this.id = id;
+        return this;
     }
 
-    public void setUser(User user) {
+    public UserUploads setUser(User user) {
         this.user = user;
+        return this;
     }
 
-    public void setUnsafe(Boolean unsafe) {
+    public UserUploads setUnsafe(Boolean unsafe) {
         isUnsafe = unsafe;
+        return this;
     }
 
-    public void setUuid(UUID uuid) {
+    public UserUploads setUuid(UUID uuid) {
         this.uuid = uuid;
+        return this;
     }
 
-    public void setName(String name) {
+    public UserUploads setName(String name) {
         this.name = name;
+        return this;
     }
 
-    public void setMimeType(String mimeType) {
+    public UserUploads setMimeType(String mimeType) {
         this.mimeType = mimeType;
+        return this;
     }
 
-    public void setFolder(String folder) {
+    public UserUploads setFolder(String folder) {
         this.folder = folder;
+        return this;
+    }
+
+    public UserUploads setUploadDate(LocalDateTime uploadDate) {
+        this.uploadDate = uploadDate;
+        return this;
+    }
+
+    public UserUploads setRemovedDate(LocalDateTime removedDate) {
+        this.removedDate = removedDate;
+        return this;
     }
 }

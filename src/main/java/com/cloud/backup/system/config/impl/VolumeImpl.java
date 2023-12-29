@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -22,11 +21,6 @@ public class VolumeImpl implements Volume {
     String volumePath;
 
     @Override
-    public Path getPath() {
-        return Path.of(URI.create(volumePath));
-    }
-
-    @Override
     public void createFolder(String pathName, String userId) {
         Path directory = getActualPath(userId,pathName);
         try {
@@ -37,19 +31,19 @@ public class VolumeImpl implements Volume {
         }
     }
 
-    @Override
-    public void deleteFolder(Path path) {
+    public void createUserFolder(String userId) {
+        Path directory = getActualPath(userId);
         try {
-            boolean deleted = Files.deleteIfExists(path);
-            if (deleted) {
-                logger.info("Folder deleted successful");
-            } else {
-                logger.info("Folder deleted successful");
-            }
+            Files.createDirectories(directory);
         }catch (IOException e) {
-            logger.error("Error deleting the folder in path: {}", path.toString());
+            logger.error("Error creating the folder of the user : {}", userId);
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void deleteFolder(Path path) {
+        deleteBoilerplate(path);
     }
 
     @Override
@@ -59,6 +53,25 @@ public class VolumeImpl implements Volume {
             Files.write(file.toPath(), content);
         }catch (IOException e) {
             logger.error("error in create file: {}", path.toString());
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void deleteFile(Path path) {
+        deleteBoilerplate(path);
+    }
+
+    private void deleteBoilerplate(Path path) {
+        try {
+            boolean deleted = Files.deleteIfExists(path);
+            if (deleted) {
+                logger.info("deleted successful");
+            } else {
+                logger.info("not deleted");
+            }
+        }catch (IOException e) {
+            logger.error("Error deleting in path: {}", path.toString());
             throw new RuntimeException(e);
         }
     }
@@ -92,15 +105,9 @@ public class VolumeImpl implements Volume {
         return sb.toString();
     }
 
+    @Override
     public Path getActualPath(String ...args) {
         String concatPath = pathConcat(args);
-        Path path = Paths.get(concatPath);
-        try {
-            Files.createDirectories(path);
-        }catch (IOException e){
-            logger.error("Error creating directory");
-            throw new RuntimeException(e);
-        }
-        return path;
+        return Paths.get(concatPath);
     }
 }
