@@ -1,5 +1,6 @@
 package com.cloud.backup.system.service.impl;
 
+import com.cloud.backup.system.config.impl.VolumeImpl;
 import com.cloud.backup.system.dao.impl.UserDAO;
 import com.cloud.backup.system.exception.impl.CloudBusinessException;
 import com.cloud.backup.system.model.impl.User;
@@ -15,6 +16,8 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
+import java.util.concurrent.CompletableFuture;
+
 
 @ApplicationScoped
 public class UserService {
@@ -24,6 +27,9 @@ public class UserService {
 
     @Inject
     PBKDF2Encoder pbkdf2Encoder;
+
+    @Inject
+    VolumeImpl volumeUtil;
 
     @ConfigProperty(name = "com.cloud.backup.system.jwt.duration")
     Long tokenDuration;
@@ -49,6 +55,7 @@ public class UserService {
         userDAO.insert(user);
 
         var token = TokenUtils.generateToken(user.getName(),user.getUserRoles(), tokenDuration, user.getId(), user.getEmail());
+        CompletableFuture.runAsync(()->volumeUtil.createUserFolder(String.valueOf(user.getId())));
         return AuthResponse.token(token);
     }
 
