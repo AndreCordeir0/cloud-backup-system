@@ -12,6 +12,8 @@ import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 
+import java.util.UUID;
+
 @Path("/upload")
 public class UserUploadsRest {
 
@@ -39,7 +41,15 @@ public class UserUploadsRest {
         return Response.ok(userUploadsService.saveFile(formData, ctx.getClaim(ClaimEnum.ID.getClaim()))).build();
     }
 
-
+    @GET
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    @Path("/download/{uuid}")
+    public Response downloadFile(@PathParam("uuid") UUID uuid) {
+        return Response.ok(
+                userUploadsService.downloadFile(uuid, ctx.getClaim(ClaimEnum.ID.getClaim())),
+                MediaType.APPLICATION_OCTET_STREAM_TYPE
+        ).build();
+    }
 
     @PUT
     @Path("/unsafe/{id}")

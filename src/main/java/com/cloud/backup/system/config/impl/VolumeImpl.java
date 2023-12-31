@@ -62,6 +62,16 @@ public class VolumeImpl implements Volume {
         deleteBoilerplate(path);
     }
 
+    @Override
+    public byte[] getFile(Path path) {
+        try {
+            return Files.readAllBytes(path);
+        }catch (IOException e) {
+            logger.error("Error in get file in path: {}", path.toString());
+            throw new RuntimeException(e);
+        }
+    }
+
     private void deleteBoilerplate(Path path) {
         try {
             boolean deleted = Files.deleteIfExists(path);

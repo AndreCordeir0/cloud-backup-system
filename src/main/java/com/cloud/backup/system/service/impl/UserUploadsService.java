@@ -14,6 +14,8 @@ import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -45,7 +47,7 @@ public class UserUploadsService {
         volumeUtil.createFolder(folderName, userId);
         return "Folder created";
     }
-
+    //TODO Compression file
     @Transactional(Transactional.TxType.REQUIRED)
     public String saveFile(@MultipartForm FormData formData, String userId) {
         User user = userDAO.findById(Long.valueOf(userId), User.class);
@@ -104,6 +106,15 @@ public class UserUploadsService {
             upload.setRemovedDate(LocalDateTime.now());
             volumeUtil.deleteFile(path);
         }
+    }
+
+    public InputStream downloadFile(UUID uuid, String userId) {
+        UserUploads upload = userUploadsDAO.getFileFromUUID(uuid, Long.valueOf(userId));
+        if (upload == null) {
+            throw new CloudBusinessException("File not found.", Status.NOT_FOUND);
+        }
+        byte[] byteFile = volumeUtil.getFile(mountPathUsingUserUploads(upload));
+        return new ByteArrayInputStream(byteFile);
     }
 
     private Path mountPathUsingUserUploads(UserUploads userUpload) {

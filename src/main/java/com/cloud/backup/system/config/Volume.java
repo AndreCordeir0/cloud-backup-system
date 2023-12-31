@@ -13,4 +13,6 @@ public interface Volume {
     public void saveFile(String hash, Path path, byte[] content);
 
     public void deleteFile(Path path);
+
+    public byte[] getFile(Path path);
 }

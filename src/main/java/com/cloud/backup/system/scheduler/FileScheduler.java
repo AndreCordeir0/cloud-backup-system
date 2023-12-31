@@ -1,6 +1,5 @@
 package com.cloud.backup.system.scheduler;
 
-import com.cloud.backup.system.dao.impl.UserUploadsDAO;
 import com.cloud.backup.system.service.impl.UserUploadsService;
 import io.quarkus.scheduler.Scheduled;
 import jakarta.enterprise.context.ApplicationScoped;
