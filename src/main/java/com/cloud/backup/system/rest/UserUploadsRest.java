@@ -44,6 +44,7 @@ public class UserUploadsRest {
     @GET
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @Path("/download/{uuid}")
+    @RolesAllowed({"USER", "ADMIN"})
     public Response downloadFile(@PathParam("uuid") UUID uuid) {
         return Response.ok(
                 userUploadsService.downloadFile(uuid, ctx.getClaim(ClaimEnum.ID.getClaim())),
